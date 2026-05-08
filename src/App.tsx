@@ -254,19 +254,20 @@ function GeneralCalculator() {
         setDisplay("Error");
       }
     } else if (val === "%") {
-      try {
-        const num = display === "" ? 0 : Number(display);
-        const result = num / 100;
-        setEquation((display || "0") + "% =");
-        setDisplay(String(result));
-      } catch {
-        setDisplay("Error");
-      }
+      setDisplay(prev => prev + "%");
     } else if (val === "=" || val === "Enter") {
       if (!display) return;
       try {
+        let cleanDisplay = display.replace(/×/g, "*").replace(/÷/g, "/");
+        
+        // Handle percentage calculation: "1000-10%" -> "1000-(1000*10/100)"
+        // Logic: find pattern [number][operator][number]%
+        cleanDisplay = cleanDisplay.replace(/(\d+(\.\d+)?)\s*([+-])\s*(\d+(\.\d+)?)%/g, '($1$3($1*$4/100))');
+        
+        // Handle basic percentage: "1000*10%" -> "1000*10/100"
+        cleanDisplay = cleanDisplay.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+
         // eslint-disable-next-line no-eval
-        const cleanDisplay = display.replace(/×/g, "*").replace(/÷/g, "/");
         const result = eval(cleanDisplay);
         setEquation(display + " =");
         const formattedResult = String(Number(result).toFixed(2)).replace(/\.00$/, "");
