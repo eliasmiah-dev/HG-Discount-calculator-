@@ -127,7 +127,7 @@ export default function App() {
               HEAD GEAR
             </h1>
             <p className="text-slate-500 text-[8px] sm:text-[10px] mt-1 tracking-[0.3em] uppercase font-black opacity-80">
-              Professional Calculator System
+              DISCOUNT CALCULATOR
             </p>
           </div>
           
