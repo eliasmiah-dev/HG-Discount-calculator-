@@ -331,6 +331,7 @@ export default function App() {
 function QuickPriceAdjustment() {
   const [price, setPrice] = useState<string>("");
   const [percentage, setPercentage] = useState<string>("");
+  const [discountAmount, setDiscountAmount] = useState<string>("");
   const [isVatAdded, setIsVatAdded] = useState(false);
 
   const p = parseFloat(price) || 0;
@@ -338,6 +339,42 @@ function QuickPriceAdjustment() {
   const result = p - (p * pct / 100);
   const vat = result * 0.075;
   const finalPrice = result + vat;
+
+  const handlePriceChange = (val: string) => {
+    setPrice(val);
+    const pVal = parseFloat(val);
+    const pctVal = parseFloat(percentage);
+    if (!isNaN(pVal) && !isNaN(pctVal)) {
+      setDiscountAmount(String(Number((pVal * pctVal / 100).toFixed(2))));
+    } else {
+      setDiscountAmount("");
+    }
+    setIsVatAdded(false);
+  };
+
+  const handlePercentageChange = (val: string) => {
+    setPercentage(val);
+    const pVal = parseFloat(price);
+    const pctVal = parseFloat(val);
+    if (!isNaN(pVal) && !isNaN(pctVal)) {
+      setDiscountAmount(String(Number((pVal * pctVal / 100).toFixed(2))));
+    } else {
+      setDiscountAmount("");
+    }
+    setIsVatAdded(false);
+  };
+
+  const handleDiscountAmountChange = (val: string) => {
+    setDiscountAmount(val);
+    const pVal = parseFloat(price);
+    const amtVal = parseFloat(val);
+    if (!isNaN(pVal) && pVal > 0 && !isNaN(amtVal)) {
+      setPercentage(String(Number(((amtVal / pVal) * 100).toFixed(2))));
+    } else {
+      setPercentage("");
+    }
+    setIsVatAdded(false);
+  };
 
   return (
     <div className="flex flex-col h-full space-y-4">
@@ -350,29 +387,39 @@ function QuickPriceAdjustment() {
               type="number"
               placeholder="0.00"
               value={price}
-              onChange={(e) => {
-                setPrice(e.target.value);
-                setIsVatAdded(false);
-              }}
+              onChange={(e) => handlePriceChange(e.target.value)}
               className="w-full pl-10 pr-4 py-4 bg-slate-50 border-2 border-black rounded-[20px] text-lg font-black outline-none no-spinner focus:bg-white transition-all"
             />
           </div>
         </div>
 
-        <div className="group space-y-2">
-          <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] ml-1">Percent</label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">%</span>
-            <input
-              type="number"
-              placeholder="0"
-              value={percentage}
-              onChange={(e) => {
-                setPercentage(e.target.value);
-                setIsVatAdded(false);
-              }}
-              className="w-full pl-10 pr-4 py-4 bg-slate-50 border-2 border-black rounded-[20px] text-lg font-black outline-none no-spinner focus:bg-white transition-all"
-            />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="group space-y-2">
+            <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] ml-1">Percent</label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">%</span>
+              <input
+                type="number"
+                placeholder="0"
+                value={percentage}
+                onChange={(e) => handlePercentageChange(e.target.value)}
+                className="w-full pl-10 pr-4 py-4 bg-slate-50 border-2 border-black rounded-[20px] text-lg font-black outline-none no-spinner focus:bg-white transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="group space-y-2">
+            <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] ml-1">Discount BDT</label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">৳</span>
+              <input
+                type="number"
+                placeholder="0"
+                value={discountAmount}
+                onChange={(e) => handleDiscountAmountChange(e.target.value)}
+                className="w-full pl-10 pr-4 py-4 bg-slate-50 border-2 border-black rounded-[20px] text-lg font-black outline-none no-spinner focus:bg-white transition-all"
+              />
+            </div>
           </div>
         </div>
       </div>
