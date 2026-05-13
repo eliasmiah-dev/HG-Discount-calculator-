@@ -75,6 +75,7 @@ function StatusIcon({ percentage }: { percentage: number }) {
 export default function App() {
   const [mrp, setMrp] = useState<string>("");
   const [discountPrice, setDiscountPrice] = useState<string>("");
+  const [resetKey, setResetKey] = useState(0);
   const [results, setResults] = useState({
     amount: 0,
     percentage: 0,
@@ -103,6 +104,7 @@ export default function App() {
   const handleReset = () => {
     setMrp("");
     setDiscountPrice("");
+    setResetKey(prev => prev + 1);
   };
 
   const formatCurrency = (value: number) => {
@@ -283,7 +285,7 @@ export default function App() {
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto lg:overflow-visible">
-                <QuickPriceAdjustment />
+                <QuickPriceAdjustment key={resetKey} />
               </div>
             </section>
 
@@ -297,7 +299,7 @@ export default function App() {
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto lg:overflow-visible">
-                <GeneralCalculator />
+                <GeneralCalculator key={resetKey} />
               </div>
             </section>
           </div>
